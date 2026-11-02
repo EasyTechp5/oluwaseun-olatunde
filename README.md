@@ -4,6 +4,9 @@ A premium, editorial personal site for Oluwaseun Olatunde, Head of Customer Oper
 
 **Live site:** https://easytechp5.github.io/oluwaseun-olatunde/
 
+## Logo
+`assets/img/logo.svg` (full lockup), `logo-light.svg` (for dark backgrounds), `logo-mark.svg` and `logo-mark-amber.svg` (icon only).
+
 ## Stack
 Dependency-free static site: HTML, CSS and vanilla JS. Pages are generated from `scripts/build.mjs`.
 
@@ -13,10 +16,8 @@ node scripts/serve.mjs      # preview at http://localhost:4173
 npm test                    # rebuild + check links, alt text, labels, SEO basics, duplicate ids
 ```
 
-Append `?theme=dark` to any URL to preview dark mode.
-
 ## What's in
-Home, About (animated timeline), Work (6 case studies), Insights (filterable), Speaking (with booking form), Community, Contact, Privacy, Terms, 404, sitemap.xml, robots.txt. Dark mode, animated counters, reduced-motion support, cookie consent (non-essential tracking off by default), schema.org Person/Article markup.
+Home, About (animated timeline), Work (6 case studies), Insights (filterable), Speaking (with booking form), Community, Contact, Privacy, Terms, 404, sitemap.xml, robots.txt. Animated counters, reduced-motion support, cookie consent (non-essential tracking off by default), schema.org Person/Article markup.
 
 ## Before launch (placeholders to confirm)
 - Email `hello@oluwaseunolatunde.com` and LinkedIn URL are placeholders: edit `EMAIL` / `LINKEDIN` in `scripts/build.mjs` and `CONFIG.email` in `assets/js/main.js`.

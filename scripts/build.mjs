@@ -332,6 +332,12 @@ const howIWork = `
   </div>
 </section>`;
 
+/* ---------------------------------------------------------------- logo: a conversation bubble holding a rising chain of connected nodes */
+const MARK = `<svg class="logo-mark" viewBox="0 0 48 48" aria-hidden="true"><path class="b" d="M10 3h28a8 8 0 0 1 8 8v18a8 8 0 0 1-8 8H24l-10 9v-9h-4a8 8 0 0 1-8-8V11a8 8 0 0 1 8-8z"/><polyline class="l" points="11,28 20,19 27,24 37,12" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle class="n" cx="11" cy="28" r="2.6"/><circle class="n" cx="20" cy="19" r="2.6"/><circle class="n" cx="27" cy="24" r="2.6"/><circle class="n" cx="37" cy="12" r="3.8"/></svg>`;
+const logo = (r) => `<a class="logo" href="${r}" aria-label="${NAME} — home">${MARK}<span class="logo-text"><b>Oluwaseun Olatunde</b><small>CX · AI · Operations</small></span></a>`;
+const markFile = (bg, line, node) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="256" height="256"><path fill="${bg}" d="M10 3h28a8 8 0 0 1 8 8v18a8 8 0 0 1-8 8H24l-10 9v-9h-4a8 8 0 0 1-8-8V11a8 8 0 0 1 8-8z"/><polyline points="11,28 20,19 27,24 37,12" fill="none" stroke="${line}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><g fill="${node}"><circle cx="11" cy="28" r="2.6"/><circle cx="20" cy="19" r="2.6"/><circle cx="27" cy="24" r="2.6"/><circle cx="37" cy="12" r="3.8"/></g></svg>\n`;
+const lockupFile = (bg, line, node, text, sub) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 64" width="760" height="128"><g transform="translate(0 8) scale(1)"><svg viewBox="0 0 48 48" width="48" height="48"><path fill="${bg}" d="M10 3h28a8 8 0 0 1 8 8v18a8 8 0 0 1-8 8H24l-10 9v-9h-4a8 8 0 0 1-8-8V11a8 8 0 0 1 8-8z"/><polyline points="11,28 20,19 27,24 37,12" fill="none" stroke="${line}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><g fill="${node}"><circle cx="11" cy="28" r="2.6"/><circle cx="20" cy="19" r="2.6"/><circle cx="27" cy="24" r="2.6"/><circle cx="37" cy="12" r="3.8"/></g></svg></g><text x="62" y="34" font-family="Fraunces, Georgia, serif" font-weight="600" font-size="26" fill="${text}">Oluwaseun Olatunde</text><text x="63" y="52" font-family="Inter, Arial, sans-serif" font-weight="600" font-size="10.5" letter-spacing="3.2" fill="${sub}">CX · AI · OPERATIONS</text></svg>\n`;
+
 const nav = [
   ["about", "About"], ["work", "Work"], ["insights", "Insights"], ["speaking", "Speaking"], ["community", "Community"],
 ];
@@ -346,7 +352,7 @@ function layout({ path, title, desc, body, bodyClass = "", jsonld = "", noindex 
   const navLinks = nav.map(([h, l]) => `<a href="${r}${h}/"${section === h ? ' aria-current="page"' : ""}>${l}</a>`).join("");
   const mLinks = nav.map(([h, l]) => `<a class="m-link" href="${r}${h}/">${l}<span>→</span></a>`).join("");
   return `<!doctype html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -356,7 +362,7 @@ ${path === "404.html" ? `<base href="${SITE}/">` : ""}
 <link rel="canonical" href="${url}">
 ${noindex ? '<meta name="robots" content="noindex">' : ""}
 <meta name="theme-color" content="#0e1b2c">
-<meta name="color-scheme" content="light dark">
+<meta name="color-scheme" content="light">
 ${path === "index.html" ? `<link rel="preload" as="image" href="${r}assets/img/oluwaseun.jpg" fetchpriority="high">` : ""}
 <meta property="og:type" content="${section === "work" && depth > 1 ? "article" : "website"}">
 <meta property="og:site_name" content="${NAME}">
@@ -367,22 +373,20 @@ ${path === "index.html" ? `<link rel="preload" as="image" href="${r}assets/img/o
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${esc(fullTitle)}">
 <meta name="twitter:description" content="${esc(desc)}">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230e1b2c'/%3E%3Ctext x='32' y='45' font-family='Georgia,serif' font-style='italic' font-size='38' text-anchor='middle' fill='%23f4a300'%3ES%3C/text%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="${r}assets/img/logo-mark.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="${r}assets/css/styles.css">
-<script>try{var q=new URLSearchParams(location.search).get("theme");var t=(q==="dark"||q==="light"?q:null)||localStorage.getItem("theme")||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 ${jsonld ? `<script type="application/ld+json">${jsonld}</script>` : ""}
 </head>
 <body class="${bodyClass}">
 <a class="skip-link" href="#main">Skip to content</a>
 <header class="site-header">
   <div class="wrap bar">
-    <a class="logo" href="${r}" aria-label="${NAME} — home"><span class="mark" aria-hidden="true">S</span><span>Oluwaseun Olatunde</span></a>
+    ${logo(r)}
     <nav class="nav" aria-label="Primary">${navLinks}</nav>
     <div class="header-actions">
-      <button class="icon-btn theme-toggle" type="button" aria-label="Toggle dark mode" aria-pressed="false">${I.sun.replace("<svg", '<svg class="sun"')}${I.moon.replace("<svg", '<svg class="moon"')}</button>
       <a class="btn btn--sm header-cta" href="${r}contact/">Work With Me ${ARR}</a>
       <button class="icon-btn menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu"><span class="bars"><i></i><i></i><i></i></span></button>
     </div>
@@ -397,22 +401,25 @@ ${body(r)}
 </main>
 <footer class="site-footer">
   <div class="wrap">
-    <div class="footer-grid">
+    <div class="f-news">
+      <div><span class="eyebrow">The newsletter</span><h2 class="f-h">Practical notes on AI-enabled customer operations.</h2><p>One email, only when there is something worth saying.</p></div>
       <div>
-        <a class="logo" href="${r}"><span class="mark" aria-hidden="true">S</span><span>Oluwaseun Olatunde</span></a>
-        <p class="about">Designing CX systems that think, learn, and scale. Head of Customer Operations at Flutterwave.</p>
-      </div>
-      <div><h4>Explore</h4><ul>${nav.map(([h, l]) => `<li><a href="${r}${h}/">${l}</a></li>`).join("")}<li><a href="${r}contact/">Contact</a></li></ul></div>
-      <div><h4>Connect</h4><ul><li><a href="${LINKEDIN}" rel="noopener">LinkedIn</a></li><li><a href="mailto:${EMAIL}">Email</a></li><li><a href="${r}speaking/#book">Book a talk</a></li><li><a href="${r}privacy/">Privacy</a></li></ul></div>
-      <div>
-        <h4>The newsletter</h4>
-        <p style="font-size:.98rem;margin-bottom:16px">Practical notes on AI-enabled customer operations. One email, when there is something worth saying.</p>
         <form class="news-form" data-form="newsletter" novalidate>
-          <div class="field" style="flex:1 1 200px"><label class="hp-label" for="nl-email-${depth}" style="position:absolute;left:-9999px">Email address</label><input id="nl-email-${depth}" type="email" name="email" placeholder="you@email.com" autocomplete="email" required aria-describedby="nl-note-${depth}"><span class="err" style="color:#ff9d80">Enter a valid email.</span></div>
-          <button class="btn" type="submit">Subscribe</button>
+          <div class="field"><label class="sr-only" for="nl-email-${depth}">Email address</label><input id="nl-email-${depth}" type="email" name="email" placeholder="Your email address" autocomplete="email" required aria-describedby="nl-note-${depth}"><span class="err">Enter a valid email.</span></div>
+          <button class="btn" type="submit">Subscribe ${ARR}</button>
         </form>
         <p class="news-note" id="nl-note-${depth}">Double opt-in. Unsubscribe any time.</p>
       </div>
+    </div>
+    <div class="f-grid">
+      <div class="f-brand">
+        ${logo(r)}
+        <p class="about">Designing CX systems that think, learn, and scale. Head of Customer Operations at Flutterwave.</p>
+        <div class="socials"><a href="${LINKEDIN}" rel="noopener" aria-label="LinkedIn">${I.in}</a><a href="mailto:${EMAIL}" aria-label="Email">${I.mail}</a></div>
+      </div>
+      <nav aria-label="Explore"><h3 class="f-t">Explore</h3><ul>${nav.map(([h, l]) => `<li><a href="${r}${h}/">${l}</a></li>`).join("")}<li><a href="${r}contact/">Contact</a></li></ul></nav>
+      <nav aria-label="Case studies"><h3 class="f-t">Case studies</h3><ul>${cases.map((c) => `<li><a href="${r}work/${c.slug}/">${c.title}</a></li>`).join("")}</ul></nav>
+      <div><h3 class="f-t">Get in touch</h3><ul><li><a href="mailto:${EMAIL}">${EMAIL}</a></li><li><a href="${LINKEDIN}" rel="noopener">LinkedIn</a></li><li><a href="${r}speaking/#book">Book a talk</a></li></ul><p class="f-small">Replies within two working days.</p></div>
     </div>
     <div class="mega" aria-hidden="true">Olatunde</div>
     <div class="footer-bottom"><span>© <span data-year>2026</span> ${NAME}. All rights reserved.</span><nav aria-label="Legal"><a href="${r}privacy/">Privacy</a><a href="${r}terms/">Terms</a><a href="${r}sitemap.xml">Sitemap</a></nav></div>
@@ -481,11 +488,9 @@ add({
   ${nodesBg}
   <div class="wrap hero-grid">
     <div>
-      <span class="eyebrow rise" style="--d:.05s">Head of Customer Operations · Flutterwave</span>
-      <h1><span class="line"><span style="--d:.1s">Oluwaseun</span></span><span class="line"><span style="--d:.22s">Olatunde</span></span></h1>
-      <p class="tagline rise" style="--d:.45s">Designing CX systems that think, learn, and scale.</p>
-      <p class="rotator rise" style="--d:.5s" aria-live="off"><span>Currently obsessed with</span> <b data-rot="AI that amplifies people|quality as an operating system|scaling teams without breaking metrics|support customers actually rate highly">AI that amplifies people</b></p>
-      <p class="lede rise" style="--d:.55s">Head of Customer Operations at Flutterwave. Fifteen years turning customer support into a competitive advantage with data, AI and discipline.</p>
+      <h1 class="hero-h1"><span class="line"><span style="--d:.1s">Designing CX systems</span></span><span class="line"><span style="--d:.22s">that <em>think, learn,</em></span></span><span class="line"><span style="--d:.34s">and <em>scale.</em></span></span></h1>
+      <div class="rotator rise" style="--d:.5s"><span class="rot-dot" aria-hidden="true"></span><span class="rot-label">Currently obsessed with</span><span class="rot-window"><span class="rot-track"><span>AI that amplifies people</span><span>quality as an operating system</span><span>scaling without breaking metrics</span><span>support customers rate highly</span></span></span></div>
+      <p class="lede typing rise" style="--d:.6s" data-type><span class="sr-only">Head of Customer Operations at Flutterwave. Fifteen years turning customer support into a competitive advantage with data, AI and discipline.</span><span class="ghost" aria-hidden="true">Head of Customer Operations at Flutterwave. Fifteen years turning customer support into a competitive advantage with data, AI and discipline.</span></p>
       <div class="hero-actions rise" style="--d:.7s">
         <a class="btn" href="${r}contact/">Work With Me ${ARR}</a>
         <a class="btn btn--ghost" href="#results">See the Results</a>
@@ -495,9 +500,8 @@ add({
     <div class="hero-visual">
       <div class="blob" aria-hidden="true"></div>
       <figure class="portrait" style="margin:0"><img src="${r}assets/img/oluwaseun.jpg" alt="Portrait of Oluwaseun Olatunde, smiling with arms folded in a striped shirt" width="502" height="646" fetchpriority="high"></figure>
-      <div class="hero-chip hero-chip--a"><span class="dot">${I.quality.replace("<svg", '<svg width="20" height="20"')}</span><span><b>85%</b>chat CSAT, up from 65%</span></div>
-      <div class="hero-chip hero-chip--c"><span class="dot">${I.mic.replace("<svg", '<svg width="20" height="20"')}</span><span><b>15 yrs</b>in CX and operations</span></div>
-      <div class="hero-chip hero-chip--b"><span class="dot">${I.ai.replace("<svg", '<svg width="20" height="20"')}</span><span><b>3×</b>team scale-up</span></div>
+
+
     </div>
   </div>
 <a class="scroll-cue" href="#results" aria-label="Scroll to results"><span></span></a>
@@ -506,10 +510,10 @@ add({
 <section class="results" id="results" aria-label="Key results">
   <div class="wrap">
     <div class="metrics">
-      <div class="metric"><div class="num"><span data-count="65">65</span>%<small>→</small><span data-count="85">85</span>%</div><div class="cap">Chat customer satisfaction (CSAT)</div></div>
-      <div class="metric"><div class="num"><span data-count="3">3</span><small>hrs →</small><span data-count="15">15</span><small>min</small></div><div class="cap">First response time</div></div>
-      <div class="metric"><div class="num"><span data-count="3">3</span>×</div><div class="cap">Multilingual team scale-up in two quarters</div></div>
-      <div class="metric"><div class="num"><span data-count="39">39</span>%</div><div class="cap">Reduction in annual operating cost</div></div>
+      <div class="metric"><div class="m-top">Chat CSAT</div><div class="num"><span class="from">65%</span><i aria-hidden="true">→</i><span class="to"><span data-count="85">85</span>%</span></div><div class="cap">Customer satisfaction, up 20 points</div></div>
+      <div class="metric"><div class="m-top">First response</div><div class="num"><span class="from">3 hrs</span><i aria-hidden="true">→</i><span class="to"><span data-count="15">15</span> min</span></div><div class="cap">Time to a first reply</div></div>
+      <div class="metric"><div class="m-top">Team scale-up</div><div class="num"><span class="to"><span data-count="3">3</span>×</span></div><div class="cap">Multilingual team in two quarters</div></div>
+      <div class="metric"><div class="m-top">Cost reduction</div><div class="num"><span class="to"><span data-count="39">39</span>%</span></div><div class="cap">Lower annual operating cost</div></div>
     </div>
   </div>
 </section>
@@ -788,7 +792,7 @@ add({
   path: "privacy/index.html", title: "Privacy", desc: "How this site handles your data.",
   body: (r) => `${pageHero(r, "Privacy", "Privacy policy.", "Plain language, short.")}<section class="section"><div class="wrap prose">
 <h2>What I collect</h2><p>If you send a message or enquiry, I receive the details you provide (such as your name, email and message) so I can reply. If you subscribe to the newsletter, I receive your email address.</p>
-<h2>Analytics and cookies</h2><p>Non-essential tracking is off by default. If analytics is added, it will be privacy-friendly and will only run if you accept. Your theme and consent choice are stored in your browser only.</p>
+<h2>Analytics and cookies</h2><p>Non-essential tracking is off by default. If analytics is added, it will be privacy-friendly and will only run if you accept. Your consent choice is stored in your browser only.</p>
 <h2>Your rights</h2><p>You can ask me to see, correct or delete your data at any time. I aim to follow the Nigeria Data Protection Act and the GDPR for international visitors. Contact <a href="mailto:${EMAIL}">${EMAIL}</a>.</p></div></section>`,
 });
 add({
@@ -815,4 +819,9 @@ const urls = pages.filter((p) => !p.noindex).map((p) => `${SITE}/${p.path.replac
 writeFileSync(join(ROOT, "sitemap.xml"), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) => `  <url><loc>${u}</loc></url>`).join("\n")}\n</urlset>\n`);
 writeFileSync(join(ROOT, "robots.txt"), `User-agent: *\nAllow: /\n\nSitemap: ${SITE}/sitemap.xml\n`);
 writeFileSync(join(ROOT, ".nojekyll"), "");
+mkdirSync(join(ROOT, "assets/img"), { recursive: true });
+writeFileSync(join(ROOT, "assets/img/logo-mark.svg"), markFile("#0e1b2c", "#f4a300", "#f4a300"));
+writeFileSync(join(ROOT, "assets/img/logo-mark-amber.svg"), markFile("#f4a300", "#0e1b2c", "#0e1b2c"));
+writeFileSync(join(ROOT, "assets/img/logo.svg"), lockupFile("#0e1b2c", "#f4a300", "#f4a300", "#0e1b2c", "#3b4a5f"));
+writeFileSync(join(ROOT, "assets/img/logo-light.svg"), lockupFile("#f4a300", "#0e1b2c", "#0e1b2c", "#ffffff", "#b9c4d3"));
 console.log(`Built ${pages.length} pages → ${ROOT}`);

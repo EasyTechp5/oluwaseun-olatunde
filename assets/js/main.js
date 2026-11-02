@@ -17,23 +17,6 @@
     set: function (k, v) { try { localStorage.setItem(k, v); } catch (e) {} },
   };
 
-  /* ---- Theme (system-aware, saved) ---- */
-  var saved = store.get("theme");
-  var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-  function setTheme(t) {
-    doc.setAttribute("data-theme", t);
-    $$(".theme-toggle").forEach(function (b) { b.setAttribute("aria-pressed", String(t === "dark")); });
-  }
-  var qTheme = new URLSearchParams(location.search).get("theme");
-  setTheme(qTheme === "dark" || qTheme === "light" ? qTheme : (saved || (prefersDark ? "dark" : "light")));
-  $$(".theme-toggle").forEach(function (b) {
-    b.addEventListener("click", function () {
-      var next = doc.getAttribute("data-theme") === "dark" ? "light" : "dark";
-      setTheme(next);
-      store.set("theme", next);
-    });
-  });
-
   /* ---- Sticky header shrink ---- */
   var header = $(".site-header");
   function onScroll() {
@@ -251,14 +234,37 @@
   $$(".section-head h2, .cta h2").forEach(splitWords);
 
   /* ---- Hero: rotating phrase + pointer tilt ---- */
-  var rot = $("[data-rot]");
-  if (rot && !reduce) {
-    var phrases = rot.getAttribute("data-rot").split("|"), pi = 0;
+  var track = $(".rot-track");
+  if (track && !reduce) {
+    var n = track.children.length, ri = 0;
     setInterval(function () {
-      rot.classList.add("swap");
-      setTimeout(function () { pi = (pi + 1) % phrases.length; rot.textContent = phrases[pi]; rot.classList.remove("swap"); }, 380);
-    }, 3200);
+      ri = (ri + 1) % n;
+      track.style.transform = "translateY(" + (-ri * 100 / n) + "%)";
+    }, 3000);
   }
+
+  /* ---- Hero paragraph types itself out (full text stays in the DOM for screen readers) ---- */
+  var typer = $("[data-type]");
+  if (typer && !reduce) {
+    var ghost = $(".ghost", typer);
+    var full = ghost.textContent;
+    ghost.style.visibility = "hidden";
+    var typed = document.createElement("span");
+    typed.className = "typed"; typed.setAttribute("aria-hidden", "true");
+    var caret = document.createElement("span");
+    caret.className = "caret"; caret.setAttribute("aria-hidden", "true");
+    var text = document.createTextNode("");
+    typed.appendChild(text); typed.appendChild(caret);
+    typer.appendChild(typed);
+    var ti = 0;
+    setTimeout(function tick() {
+      ti++;
+      text.nodeValue = full.slice(0, ti);
+      if (ti < full.length) { setTimeout(tick, full.charAt(ti - 1) === "." ? 260 : 20 + Math.random() * 22); }
+      else { caret.classList.add("done"); }
+    }, 1100);
+  }
+
   var heroEl = $(".hero");
   if (heroEl && !reduce && window.matchMedia("(pointer: fine)").matches) {
     heroEl.addEventListener("pointermove", function (e) {
