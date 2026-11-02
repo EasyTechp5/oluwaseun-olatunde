@@ -561,3 +561,77 @@ body::after { content: ""; position: fixed; inset: 0; pointer-events: none; z-in
 .crumbs a { padding: 4px 0; }
 @media (pointer: coarse) { .link-arrow, .card .go { min-height: 44px; } }
 @media (forced-colors: active) { .btn, .chip, .card { border: 1px solid CanvasText; } }
+
+/* ==========================================================================
+   v3 — hero theatre, shaped sections, mesh, headline reveals, sheen
+   ========================================================================== */
+
+/* Hero: rotating line, 3D tilt, extra chip, scroll cue */
+.rotator { font-size: clamp(1rem, 1.4vw, 1.15rem); margin: 0 0 16px; color: var(--text-soft); display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: baseline; }
+.rotator b { color: var(--text); font-weight: 600; background: linear-gradient(transparent 62%, rgba(244,163,0,0.5) 62%); padding: 0 4px; transition: opacity 0.35s, transform 0.35s var(--ease); display: inline-block; }
+.rotator b.swap { opacity: 0; transform: translateY(8px); }
+.hero-visual { perspective: 1100px; }
+.portrait { transition: transform 0.25s ease-out; transform: rotateY(calc(var(--px, 0) * 7deg)) rotateX(calc(var(--py, 0) * -6deg)); will-change: transform; }
+.blob { translate: calc(var(--px, 0) * -18px) calc(var(--py, 0) * -14px); transition: translate 0.4s ease-out; }
+.hero-chip--c { right: 6%; bottom: -22px; animation-delay: -1.5s; }
+@media (max-width: 520px) { .hero-chip--c { display: none; } }
+.scroll-cue { position: absolute; left: 50%; bottom: 24px; width: 26px; height: 42px; border: 2px solid var(--text-soft); border-radius: 14px; transform: translateX(-50%); display: none; opacity: 0.7; }
+@media (min-width: 900px) and (min-height: 760px) { .scroll-cue { display: block; } }
+.scroll-cue span { position: absolute; left: 50%; top: 8px; width: 4px; height: 8px; margin-left: -2px; border-radius: 2px; background: var(--signal-deep); animation: cue 1.8s ease-in-out infinite; }
+@keyframes cue { 0% { opacity: 0; transform: translateY(0); } 30% { opacity: 1; } 100% { opacity: 0; transform: translateY(14px); } }
+.hero { position: relative; }
+.scroll-cue { z-index: 3; }
+
+/* Shaped sections: rounded top edges overlapping the previous block */
+.section--dark, .quote-band, .cta { border-radius: clamp(28px, 4.5vw, 64px) clamp(28px, 4.5vw, 64px) 0 0; margin-top: calc(clamp(28px, 4.5vw, 64px) * -1); z-index: 2; }
+.results { position: relative; z-index: 3; }
+.site-footer { border-radius: clamp(28px, 4.5vw, 64px) clamp(28px, 4.5vw, 64px) 0 0; margin-top: calc(clamp(28px, 4.5vw, 64px) * -1); position: relative; z-index: 3; }
+.cta { z-index: 3; }
+.section--alt + .section--dark, .section + .quote-band { padding-top: calc(var(--section) + 24px); }
+
+/* Mesh + grid texture on dark sections */
+.section--dark, .quote-band { background-image: radial-gradient(60% 80% at 100% 0%, rgba(244, 163, 0, 0.14), transparent 60%), radial-gradient(50% 70% at 0% 100%, rgba(15, 124, 122, 0.3), transparent 60%), linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px); background-size: auto, auto, 56px 56px, 56px 56px; background-color: var(--ink); }
+.cta { background-image: radial-gradient(70% 90% at 50% 120%, rgba(228, 87, 46, 0.35), transparent 60%), linear-gradient(rgba(14, 27, 44, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(14, 27, 44, 0.05) 1px, transparent 1px); background-size: auto, 48px 48px, 48px 48px; }
+
+/* Headline word-by-word reveal */
+.js .word { display: inline-block; overflow: hidden; vertical-align: top; padding: 0 0.07em 0.14em 0; margin: 0 -0.07em -0.14em 0; }
+.js .word > span { display: inline-block; transform: translateY(110%); transition: transform 1s var(--ease); transition-delay: calc(var(--w, 0) * 0.05s + 0.05s); }
+.js .reveal.in .word > span, .js .in .word > span { transform: none; }
+.js .section-head.reveal, .js .cta .reveal { opacity: 1; transform: none; }
+
+/* Button sheen */
+.btn { position: relative; overflow: hidden; isolation: isolate; }
+.btn::after { content: ""; position: absolute; top: 0; bottom: 0; left: -60%; width: 40%; background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.55), transparent); transform: skewX(-20deg); transition: left 0.7s var(--ease); z-index: -1; }
+.btn:hover::after { left: 130%; }
+.btn--ghost::after { display: none; }
+
+/* Case card sparkline replaces rings */
+.case-card .top::after { display: none; }
+.spark { position: absolute; right: 18px; top: 20px; width: 46%; height: auto; opacity: 0.55; transition: opacity 0.4s, transform 0.5s var(--ease); }
+.spark path { fill: none; stroke: var(--signal); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 0; }
+.spark circle { fill: var(--signal); }
+.case-card:hover .spark { opacity: 1; transform: translate(-4px, -4px) scale(1.04); }
+.spark path { pathLength: 1; }
+
+/* Insights: featured first article */
+@media (min-width: 900px) {
+  .insights-grid .article-card.feat { grid-column: span 2; flex-direction: row; }
+  .insights-grid .article-card.feat .thumb { aspect-ratio: auto; flex: 1; min-height: 0; }
+  .insights-grid .article-card.feat .body { flex: 1; justify-content: center; padding: 36px; }
+  .insights-grid .article-card.feat h3 { font-size: 1.9rem; }
+}
+
+/* About: pull quote + drop cap */
+.pull { margin: 0 auto clamp(40px, 6vw, 72px); max-width: 920px; text-align: center; font-family: var(--font-display); font-size: clamp(2rem, 5vw, 3.8rem); line-height: 1.12; letter-spacing: -0.02em; font-weight: 500; position: relative; padding-top: 0.9em; }
+.pull::before { content: "“"; position: absolute; top: -0.25em; left: 50%; transform: translateX(-50%); font-size: 5em; line-height: 1; color: var(--signal); opacity: 0.85; }
+.pull em { color: var(--teal-text); } :root[data-theme="dark"] .pull em { color: var(--signal); }
+.pull cite { display: block; margin-top: 20px; font: 600 0.8rem/1 var(--font-body); letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-soft); font-style: normal; }
+.beat:first-child p::first-letter { font-family: var(--font-display); float: left; font-size: 4.2em; line-height: 0.82; padding: 6px 12px 0 0; color: var(--signal-deep); font-weight: 600; }
+
+/* Footer mega wordmark */
+.mega { font-family: var(--font-display); font-weight: 600; font-size: clamp(4.5rem, 19vw, 17rem); line-height: 0.85; letter-spacing: -0.04em; margin-top: 48px; text-align: center; color: transparent; -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.16); background: linear-gradient(180deg, rgba(244, 163, 0, 0.35), transparent 75%); -webkit-background-clip: text; background-clip: text; user-select: none; overflow: hidden; }
+.footer-bottom { margin-top: 24px; }
+
+/* Nicer selection of cards/tiles on touch */
+@media (hover: none) { .card::after { display: none; } }
+@media (prefers-reduced-motion: reduce) { .scroll-cue span, .portrait, .blob { animation: none; transition: none; } .js .word > span { transform: none; transition: none; } }

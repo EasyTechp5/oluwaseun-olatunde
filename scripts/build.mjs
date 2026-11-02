@@ -414,6 +414,7 @@ ${body(r)}
         <p class="news-note" id="nl-note-${depth}">Double opt-in. Unsubscribe any time.</p>
       </div>
     </div>
+    <div class="mega" aria-hidden="true">Olatunde</div>
     <div class="footer-bottom"><span>© <span data-year>2026</span> ${NAME}. All rights reserved.</span><nav aria-label="Legal"><a href="${r}privacy/">Privacy</a><a href="${r}terms/">Terms</a><a href="${r}sitemap.xml">Sitemap</a></nav></div>
   </div>
 </footer>
@@ -449,12 +450,12 @@ const cta = (r, h = "Have a customer operation to run, fix or scale?", p = "Tell
 
 const caseCard = (r, c, d = 0) => `
 <a class="card case-card reveal" style="--d:${d}s" href="${r}work/${c.slug}/">
-  <div class="top"><div class="big">${c.big}</div><div class="big-cap">${c.bigCap}</div></div>
+  <div class="top"><svg class="spark" viewBox="0 0 160 70" aria-hidden="true"><path d="M2 62 C28 60 42 44 72 38 S126 16 158 5" /><circle cx="158" cy="5" r="4"/></svg><div class="big">${c.big}</div><div class="big-cap">${c.bigCap}</div></div>
   <div class="body"><span class="tag">${c.tag}</span><h3>${c.title}</h3><p>${c.short}</p><span class="go">Read the case study ${ARR}</span></div>
 </a>`;
 
-const articleCard = (a, i, d = 0) => `
-<article class="card article-card reveal" style="--d:${d}s" data-cat="${esc(a.c)}">
+const articleCard = (a, i, d = 0, feat = false) => `
+<article class="card article-card reveal${feat ? " feat" : ""}" style="--d:${d}s" data-cat="${esc(a.c)}">
   <div class="thumb">${thumb(i)}<span class="cat">${a.c}</span></div>
   <div class="body"><div class="meta"><span>${a.rt} min read</span><span>Coming to the site</span></div><h3 style="margin-top:12px">${a.t}</h3><p>${a.s}</p></div>
 </article>`;
@@ -483,6 +484,7 @@ add({
       <span class="eyebrow rise" style="--d:.05s">Head of Customer Operations · Flutterwave</span>
       <h1><span class="line"><span style="--d:.1s">Oluwaseun</span></span><span class="line"><span style="--d:.22s">Olatunde</span></span></h1>
       <p class="tagline rise" style="--d:.45s">Designing CX systems that think, learn, and scale.</p>
+      <p class="rotator rise" style="--d:.5s" aria-live="off"><span>Currently obsessed with</span> <b data-rot="AI that amplifies people|quality as an operating system|scaling teams without breaking metrics|support customers actually rate highly">AI that amplifies people</b></p>
       <p class="lede rise" style="--d:.55s">Head of Customer Operations at Flutterwave. Fifteen years turning customer support into a competitive advantage with data, AI and discipline.</p>
       <div class="hero-actions rise" style="--d:.7s">
         <a class="btn" href="${r}contact/">Work With Me ${ARR}</a>
@@ -494,9 +496,11 @@ add({
       <div class="blob" aria-hidden="true"></div>
       <figure class="portrait" style="margin:0"><img src="${r}assets/img/oluwaseun.jpg" alt="Portrait of Oluwaseun Olatunde, smiling with arms folded in a striped shirt" width="502" height="646" fetchpriority="high"></figure>
       <div class="hero-chip hero-chip--a"><span class="dot">${I.quality.replace("<svg", '<svg width="20" height="20"')}</span><span><b>85%</b>chat CSAT, up from 65%</span></div>
+      <div class="hero-chip hero-chip--c"><span class="dot">${I.mic.replace("<svg", '<svg width="20" height="20"')}</span><span><b>15 yrs</b>in CX and operations</span></div>
       <div class="hero-chip hero-chip--b"><span class="dot">${I.ai.replace("<svg", '<svg width="20" height="20"')}</span><span><b>3×</b>team scale-up</span></div>
     </div>
   </div>
+<a class="scroll-cue" href="#results" aria-label="Scroll to results"><span></span></a>
 </section>
 
 <section class="results" id="results" aria-label="Key results">
@@ -583,7 +587,7 @@ ${pageHero(r, "About", "From the frontline to the <span class=\"italic-serif\">s
   </div>
 </section>
 
-<section class="section" style="padding-top:0"><div class="wrap"><div class="bento">
+<section class="section" style="padding-top:0"><div class="wrap"><blockquote class="pull reveal">Be a river, <em>not a pond.</em><cite>The way I try to lead</cite></blockquote><div class="bento">
   <div class="tile tile--wide reveal"><b><span data-count="15">15</span>+</b><span>years in customer experience and operations</span></div>
   <div class="tile tile--amber tile--wide reveal" style="--d:.06s"><b><span data-count="3">3</span>×</b><span>multilingual team scale-up</span></div>
   <div class="tile reveal" style="--d:.12s"><b><span data-count="9">9</span></b><span>quality analysts led at Tek Experts</span></div>
@@ -688,7 +692,7 @@ add({
 ${pageHero(r, "Insights", "Short lessons from the <span class=\"italic-serif\">floor</span>.", "Stories, frameworks and hard-won lessons on customer operations, AI and leading people. First drafts of long-form versions of my best LinkedIn posts.")}
 <section class="section"><div class="wrap">
   <div class="filters" role="group" aria-label="Filter by category"><button class="chip" type="button" data-filter="all" aria-pressed="true">All</button>${cats.map((c) => `<button class="chip" type="button" data-filter="${esc(c)}" aria-pressed="false">${c}</button>`).join("")}</div>
-  <div class="grid-auto">${articles.map((a, i) => articleCard(a, i, (i % 3) * 0.08)).join("")}</div>
+  <div class="grid-auto insights-grid">${articles.map((a, i) => articleCard(a, i, (i % 3) * 0.08, i === 0)).join("")}</div>
   <div class="card reveal" style="margin-top:48px;flex-direction:row;flex-wrap:wrap;gap:24px;align-items:center;justify-content:space-between"><div style="max-width:56ch"><h3>Prefer LinkedIn?</h3><p style="margin:0;color:var(--text-soft)">I share short posts there most weeks. Follow along and join the conversation.</p></div><a class="btn" href="${LINKEDIN}" rel="noopener">Follow on LinkedIn ${ARR}</a></div>
 </div></section>
 ${cta(r, "Get the next one in your inbox.", "A short, practical email when there is something worth saying. No spam.")}`,

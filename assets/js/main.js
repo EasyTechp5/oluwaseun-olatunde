@@ -229,6 +229,46 @@
   /* ---- Footer year ---- */
   $$("[data-year]").forEach(function (el) { el.textContent = new Date().getFullYear(); });
 
+  /* ---- Headline word-by-word reveal ---- */
+  function splitWords(el) {
+    var i = 0;
+    (function walk(n) {
+      Array.prototype.slice.call(n.childNodes).forEach(function (c) {
+        if (c.nodeType === 3) {
+          var frag = document.createDocumentFragment();
+          c.textContent.split(/(\s+)/).forEach(function (t) {
+            if (!t) return;
+            if (/^\s+$/.test(t)) { frag.appendChild(document.createTextNode(" ")); return; }
+            var w = document.createElement("span"); w.className = "word";
+            var inner = document.createElement("span"); inner.textContent = t; inner.style.setProperty("--w", i++);
+            w.appendChild(inner); frag.appendChild(w);
+          });
+          c.parentNode.replaceChild(frag, c);
+        } else if (c.nodeType === 1) { walk(c); }
+      });
+    })(el);
+  }
+  $$(".section-head h2, .cta h2").forEach(splitWords);
+
+  /* ---- Hero: rotating phrase + pointer tilt ---- */
+  var rot = $("[data-rot]");
+  if (rot && !reduce) {
+    var phrases = rot.getAttribute("data-rot").split("|"), pi = 0;
+    setInterval(function () {
+      rot.classList.add("swap");
+      setTimeout(function () { pi = (pi + 1) % phrases.length; rot.textContent = phrases[pi]; rot.classList.remove("swap"); }, 380);
+    }, 3200);
+  }
+  var heroEl = $(".hero");
+  if (heroEl && !reduce && window.matchMedia("(pointer: fine)").matches) {
+    heroEl.addEventListener("pointermove", function (e) {
+      var r = heroEl.getBoundingClientRect();
+      heroEl.style.setProperty("--px", ((e.clientX - r.left) / r.width - 0.5).toFixed(3));
+      heroEl.style.setProperty("--py", ((e.clientY - r.top) / r.height - 0.5).toFixed(3));
+    }, { passive: true });
+    heroEl.addEventListener("pointerleave", function () { heroEl.style.setProperty("--px", 0); heroEl.style.setProperty("--py", 0); });
+  }
+
   /* ---- Scroll progress bar + back to top ---- */
   var bar = document.createElement("div");
   bar.className = "progress";
