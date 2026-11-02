@@ -238,6 +238,100 @@ const nodesBg = `<div class="nodes-bg" aria-hidden="true"><svg viewBox="0 0 1200
 <line x1="260" y1="60" x2="190" y2="260"/><line x1="420" y1="170" x2="330" y2="350"/><line x1="790" y1="200" x2="720" y2="380"/><line x1="980" y1="110" x2="1040" y2="330"/><line x1="190" y1="260" x2="330" y2="350"/><line x1="720" y1="380" x2="1040" y2="330"/>
 <circle cx="80" cy="120" r="4"/><circle cx="260" cy="60" r="6"/><circle cx="420" cy="170" r="4"/><circle cx="610" cy="90" r="5"/><circle cx="790" cy="200" r="6"/><circle cx="980" cy="110" r="4"/><circle cx="1130" cy="230" r="5"/><circle cx="190" cy="260" r="4"/><circle cx="330" cy="350" r="5"/><circle cx="720" cy="380" r="4"/><circle cx="1040" cy="330" r="6"/></g></svg></div>`;
 
+/* ---------------------------------------------------------------- data graphics (animated SVG) */
+let vid = 0;
+const vizCard = (title, cap, inner, cls = "") =>
+  `<figure class="viz reveal ${cls}"><figcaption class="viz-t">${title}</figcaption>${inner}<p class="viz-c">${cap}</p></figure>`;
+
+const vizLine = () => {
+  const id = `ga${vid++}`;
+  return `<svg viewBox="0 0 420 250" role="img" aria-label="Chat CSAT rose from 65 percent to 85 percent">
+<defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f4a300" stop-opacity=".38"/><stop offset="1" stop-color="#f4a300" stop-opacity="0"/></linearGradient></defs>
+<g stroke="currentColor" stroke-opacity=".13">${[40, 95, 150, 205].map((y) => `<line x1="30" x2="400" y1="${y}" y2="${y}"/>`).join("")}</g>
+<path class="fade" d="M50 190 C150 186 235 118 378 52 L378 205 L50 205Z" fill="url(#${id})"/>
+<path class="draw" pathLength="1" d="M50 190 C150 186 235 118 378 52" fill="none" stroke="#f4a300" stroke-width="4.5" stroke-linecap="round"/>
+<circle cx="50" cy="190" r="7" fill="currentColor"/><circle class="pulse" cx="378" cy="52" r="9" fill="#f4a300"/>
+<text x="50" y="171" text-anchor="middle" class="vt">65%</text><text x="360" y="38" text-anchor="end" class="vt vt--big">85%</text>
+<text x="50" y="234" text-anchor="middle" class="vs">Before</text><text x="378" y="234" text-anchor="middle" class="vs">After</text></svg>`;
+};
+
+const vizBars = (rows, aria) => {
+  const h = rows.length * 78;
+  return `<svg viewBox="0 0 420 ${h}" role="img" aria-label="${aria}">${rows
+    .map((r, i) => {
+      const y = i * 78;
+      return `<text x="0" y="${y + 16}" class="vs">${r.label}</text>
+<rect x="0" y="${y + 26}" width="420" height="12" rx="6" fill="currentColor" fill-opacity=".1"/>
+<rect class="barx" x="0" y="${y + 26}" width="${r.a}" height="12" rx="6" fill="currentColor" fill-opacity=".38" style="--i:${i * 2}"/>
+<text x="${Math.min(r.a + 8, 330)}" y="${y + 36}" class="vs" dominant-baseline="middle" style="font-size:11px">${r.at}</text>
+<rect class="barx" x="0" y="${y + 46}" width="${r.b}" height="12" rx="6" fill="#f4a300" style="--i:${i * 2 + 1}"/>
+<text x="${Math.min(r.b + 8, 330)}" y="${y + 56}" class="vt" dominant-baseline="middle" style="font-size:14px">${r.bt}</text>`;
+    })
+    .join("")}</svg>`;
+};
+
+const vizRings = (items, aria) =>
+  `<svg viewBox="0 0 ${items.length * 140} 150" role="img" aria-label="${aria}">${items
+    .map((it, i) => {
+      const cx = 70 + i * 140;
+      return `<circle cx="${cx}" cy="64" r="46" fill="none" stroke="currentColor" stroke-opacity=".12" stroke-width="12"/>
+<circle class="ring" cx="${cx}" cy="64" r="46" fill="none" stroke="${it.c || "#f4a300"}" stroke-width="12" stroke-linecap="round" pathLength="1" transform="rotate(-90 ${cx} 64)" style="--to:${(1 - it.pct / 100).toFixed(3)}"/>
+<text x="${cx}" y="72" text-anchor="middle" class="vt" style="font-size:24px">${it.text}</text>
+<text x="${cx}" y="140" text-anchor="middle" class="vs">${it.label}</text>`;
+    })
+    .join("")}</svg>`;
+
+const person = (x, y, i, hi) => {
+  const f = hi ? "#f4a300" : "currentColor";
+  const o = hi ? "" : ' fill-opacity=".55"';
+  return `<g transform="translate(${x} ${y})"><g class="pop" style="--i:${i}"><circle cx="14" cy="8" r="7" fill="${f}"${o}/><path d="M2 34c0-8 5-13 12-13s12 5 12 13z" fill="${f}"${o}/></g></g>`;
+};
+const vizTeam = () =>
+  `<svg viewBox="0 0 420 190" role="img" aria-label="Team grew three times in two quarters">
+<text x="0" y="14" class="vs">Q2 2023</text>${[0, 1, 2].map((k) => person(k * 40, 26, k, false)).join("")}
+<text x="0" y="104" class="vs">Q3 2023</text>${Array.from({ length: 9 }, (_, k) => person((k % 9) * 40, 116, k + 3, true)).join("")}
+<text x="372" y="62" text-anchor="end" class="vt vt--big">1×</text><text x="416" y="150" text-anchor="end" class="vt vt--big" style="fill:#f4a300">3×</text></svg>`;
+
+const vizMap = {
+  "csat-turnaround": () => vizCard("Chat CSAT", "Customer satisfaction before and after.", vizLine()),
+  "ai-support-rollout": () => vizCard("Guardrails held", "Workforce optimised 10% while service levels stayed above target.", vizRings([{ pct: 10, text: "10%", label: "Workforce", c: "#6fd6d2" }, { pct: 90, text: "90%+", label: "Response" }, { pct: 80, text: "80%+", label: "Resolution" }], "Workforce optimisation 10 percent, response above 90 percent, resolution above 80 percent")),
+  "multilingual-team-scale": () => vizCard("Team scale-up", "Each figure is one group of agents. Indexed, not headcount.", vizTeam()),
+  "quality-framework": () => vizCard("Quality, measured", "Indexed to 100 before the framework.", vizBars([{ label: "Evaluation efficiency", a: 322, at: "100", b: 420, bt: "130" }, { label: "Customer satisfaction", a: 322, at: "100", b: 370, bt: "115" }], "Evaluation efficiency up 30 percent, satisfaction up 15 percent")),
+  "ivr-redesign": () => vizCard("Voice engagement", "Indexed to 100 before the redesign. Four languages.", vizBars([{ label: "Voice engagement", a: 322, at: "100", b: 370, bt: "115" }], "Voice engagement improved 15 percent")),
+  "cost-restructure": () => vizCard("Annual operating cost", "Indexed to 100 before the restructure.", vizBars([{ label: "Annual operating cost", a: 420, at: "100", b: 256, bt: "61" }], "Annual operating cost reduced by 39 percent")),
+};
+
+const homeViz = `
+<section class="section section--alt">
+  <div class="wrap">
+    <div class="section-head reveal"><span class="eyebrow">The results, visualised</span><h2>Numbers that moved, <span class="italic-serif">and stayed moved.</span></h2><p class="lede">Every chart below is drawn from figures already public on LinkedIn.</p></div>
+    <div class="viz-grid">
+      ${vizCard("Chat CSAT", "From 65% to 85%.", vizLine())}
+      ${vizCard("Speed to a customer", "Relative time, before (faded) and after (amber).", vizBars([{ label: "First response: 3 hours to 15 minutes", a: 420, at: "3 hrs", b: 35, bt: "15 min" }, { label: "Resolution: 2 days to 12 hours", a: 420, at: "2 days", b: 105, bt: "12 hrs" }], "First response cut from 3 hours to 15 minutes, resolution from 2 days to 12 hours"))}
+      ${vizCard("Team scale-up", "Tripled in two quarters, metrics held.", vizTeam())}
+      ${vizCard("Operating cost", "39% lower annual operating cost in H2 2024.", vizRings([{ pct: 39, text: "−39%", label: "Annual cost", c: "#6fd6d2" }, { pct: 90, text: "90%+", label: "Response held" }, { pct: 80, text: "80%+", label: "Resolution held" }], "Cost down 39 percent while response above 90 and resolution above 80"))}
+    </div>
+  </div>
+</section>`;
+
+const marquee = (items) => {
+  const row = items.map((t) => `<span>${t}</span>`).join("");
+  return `<div class="marquee" aria-label="Capabilities"><div class="track" aria-hidden="true">${row}${row}</div></div>`;
+};
+
+const howIWork = `
+<section class="section">
+  <div class="wrap">
+    <div class="section-head reveal"><span class="eyebrow">How I work</span><h2>Fix the system. <span class="italic-serif">Then</span> amplify it.</h2><p class="lede">The same four moves, whether the operation has ten agents or a thousand.</p></div>
+    <ol class="process">
+      <li class="reveal"><span class="step-n">1</span><div class="step-ico">${I.cal.replace("<svg", '<svg width="28" height="28"')}</div><h3>Diagnose</h3><p>Map the journey and find where time and trust are really lost.</p></li>
+      <li class="reveal" style="--d:.1s"><span class="step-n">2</span><div class="step-ico">${I.quality.replace("<svg", '<svg width="28" height="28"')}</div><h3>Fix the system</h3><p>Routing, ownership, knowledge and quality, before anything is automated.</p></li>
+      <li class="reveal" style="--d:.2s"><span class="step-n">3</span><div class="step-ico">${I.ai.replace("<svg", '<svg width="28" height="28"')}</div><h3>Automate with AI</h3><p>Deploy tools like Intercom Fin on solid ground, with human hand-offs.</p></li>
+      <li class="reveal" style="--d:.3s"><span class="step-n">4</span><div class="step-ico">${I.people.replace("<svg", '<svg width="28" height="28"')}</div><h3>Coach and scale</h3><p>Hold the metrics, grow the team, and pour into the people.</p></li>
+    </ol>
+  </div>
+</section>`;
+
 const nav = [
   ["about", "About"], ["work", "Work"], ["insights", "Insights"], ["speaking", "Speaking"], ["community", "Community"],
 ];
@@ -333,6 +427,7 @@ ${body(r)}
 
 const pageHero = (r, crumb, h1, lede) => `
 <section class="page-hero">
+  ${nodesBg}
   <div class="wrap">
     <div class="crumbs"><a href="${r}">Home</a><span aria-hidden="true">/</span><span>${crumb}</span></div>
     <span class="eyebrow">${crumb}</span>
@@ -413,6 +508,7 @@ add({
   </div>
 </section>
 
+${marquee(["Customer experience", "Intercom Fin AI", "Contact-centre quality", "Lean Six Sigma", "CX data and dashboards", "AppSheet", "Multilingual IVR", "Team scale-up", "Voice of Customer", "Coaching and mentoring"])}
 <section class="section">
   <div class="wrap">
     <div class="section-head reveal"><span class="eyebrow">What I stand for</span><h2>Three ideas that run <span class="italic-serif">every</span> operation I lead.</h2><p class="lede">Customer support is not a cost to be trimmed. Built well, it is the most honest growth engine a company has.</p></div>
@@ -424,7 +520,9 @@ add({
   </div>
 </section>
 
-<section class="section section--alt">
+${howIWork}
+${homeViz}
+<section class="section">
   <div class="wrap">
     <div class="section-head section-head--row reveal"><div><span class="eyebrow">Featured work</span><h2>Proof, not promises.</h2></div><a class="link-arrow" href="${r}work/">All case studies ${ARR}</a></div>
     <div class="grid-3">${[cases[0], cases[1], cases[3]].map((c, i) => caseCard(r, c, i * 0.1)).join("")}</div>
@@ -483,6 +581,13 @@ ${pageHero(r, "About", "From the frontline to the <span class=\"italic-serif\">s
   </div>
 </section>
 
+<section class="section" style="padding-top:0"><div class="wrap"><div class="bento">
+  <div class="tile tile--wide reveal"><b><span data-count="15">15</span>+</b><span>years in customer experience and operations</span></div>
+  <div class="tile tile--amber tile--wide reveal" style="--d:.06s"><b><span data-count="3">3</span>×</b><span>multilingual team scale-up</span></div>
+  <div class="tile reveal" style="--d:.12s"><b><span data-count="9">9</span></b><span>quality analysts led at Tek Experts</span></div>
+  <div class="tile tile--teal reveal" style="--d:.18s"><b><span data-count="4">4</span></b><span>African languages in the rebuilt IVR</span></div>
+  <div class="tile reveal" style="--d:.24s"><b style="font-size:clamp(1.8rem,3vw,2.4rem)">Most Analytical QA</b><span>Awarded at Tek Experts</span></div>
+</div></div></section>
 <section class="section section--alt">
   <div class="wrap">
     <div class="section-head reveal"><span class="eyebrow">Career timeline</span><h2>Fifteen years, one thread.</h2><p class="lede">A metric on every role, because stories need evidence.</p></div>
@@ -545,9 +650,12 @@ cases.forEach((c, idx) => {
 <section class="cs-hero">
   <div class="wrap">
     <div class="crumbs"><a href="${r}">Home</a><span aria-hidden="true">/</span><a href="${r}work/">Work</a><span aria-hidden="true">/</span><span>${c.title}</span></div>
-    <span class="eyebrow" style="color:var(--signal)">${c.tag}</span>
-    <h1>${c.title}</h1>
-    <p class="lede">${c.short}</p>
+    <div class="cs-hero-grid">
+      <div><span class="eyebrow" style="color:var(--signal)">${c.tag}</span>
+      <h1>${c.title}</h1>
+      <p class="lede">${c.short}</p></div>
+      <div class="cs-viz">${vizMap[c.slug]()}</div>
+    </div>
   </div>
 </section>
 <div class="wrap" style="padding-bottom:0"><div class="cs-results" style="--n:${c.results.length}">${c.results.map((x) => `<div><div class="v">${x.v}</div><div class="k">${x.k}</div></div>`).join("")}</div></div>

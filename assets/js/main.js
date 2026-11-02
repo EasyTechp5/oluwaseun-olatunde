@@ -221,7 +221,36 @@
   /* ---- Footer year ---- */
   $$("[data-year]").forEach(function (el) { el.textContent = new Date().getFullYear(); });
 
+  /* ---- Scroll progress bar + back to top ---- */
+  var bar = document.createElement("div");
+  bar.className = "progress";
+  bar.setAttribute("aria-hidden", "true");
+  document.body.appendChild(bar);
+  var topBtn = document.createElement("button");
+  topBtn.className = "to-top";
+  topBtn.type = "button";
+  topBtn.setAttribute("aria-label", "Back to top");
+  topBtn.innerHTML = "\u2191";
+  topBtn.addEventListener("click", function () { window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" }); });
+  document.body.appendChild(topBtn);
+  function updateProgress() {
+    var max = doc.scrollHeight - window.innerHeight;
+    bar.style.setProperty("--sp", max > 0 ? (window.scrollY / max).toFixed(4) : 0);
+    topBtn.classList.toggle("show", window.scrollY > 700);
+  }
+
+  /* ---- Card spotlight follows the cursor ---- */
+  document.addEventListener("pointermove", function (e) {
+    var card = e.target.closest ? e.target.closest(".card") : null;
+    if (!card) return;
+    var r = card.getBoundingClientRect();
+    card.style.setProperty("--mx", (e.clientX - r.left) + "px");
+    card.style.setProperty("--my", (e.clientY - r.top) + "px");
+  }, { passive: true });
+
+  window.addEventListener("scroll", updateProgress, { passive: true });
   window.addEventListener("scroll", onScroll, { passive: true });
   window.addEventListener("resize", updateTimeline);
   onScroll();
+  updateProgress();
 })();
