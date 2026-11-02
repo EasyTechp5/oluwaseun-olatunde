@@ -54,7 +54,7 @@
 
 /* ---------- Reset & base ---------- */
 *, *::before, *::after { box-sizing: border-box; }
-html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; overflow-x: clip; }
+html { scroll-padding-top: 96px; scroll-behavior: smooth; -webkit-text-size-adjust: 100%; overflow-x: clip; }
 body {
   margin: 0;
   background: var(--bg);
@@ -452,7 +452,7 @@ a.side-item:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
 @keyframes fade-up { from { opacity: 0; transform: translateY(40px) scale(0.97); } }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+  *, *::before, *::after { animation-delay: 0s !important; animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
   .js .reveal { opacity: 1; transform: none; }
   .blob { animation: none; }
 }
@@ -555,3 +555,9 @@ body::after { content: ""; position: fixed; inset: 0; pointer-events: none; z-in
   .marquee .track, .viz .pulse { animation: none; }
   .js .viz .draw, .js .viz .ring { transition: none; }
 }
+
+/* a11y: comfortable touch targets for text links, visible hover for footer */
+.site-footer li a, .footer-bottom a { display: inline-block; padding: 6px 0; min-height: 32px; }
+.crumbs a { padding: 4px 0; }
+@media (pointer: coarse) { .link-arrow, .card .go { min-height: 44px; } }
+@media (forced-colors: active) { .btn, .chip, .card { border: 1px solid CanvasText; } }

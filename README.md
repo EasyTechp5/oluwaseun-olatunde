@@ -10,7 +10,10 @@ Dependency-free static site: HTML, CSS and vanilla JS. Pages are generated from 
 ```bash
 node scripts/build.mjs      # regenerate every page
 node scripts/serve.mjs      # preview at http://localhost:4173
+npm test                    # rebuild + check links, alt text, labels, SEO basics, duplicate ids
 ```
+
+Append `?theme=dark` to any URL to preview dark mode.
 
 ## What's in
 Home, About (animated timeline), Work (6 case studies), Insights (filterable), Speaking (with booking form), Community, Contact, Privacy, Terms, 404, sitemap.xml, robots.txt. Dark mode, animated counters, reduced-motion support, cookie consent (non-essential tracking off by default), schema.org Person/Article markup.

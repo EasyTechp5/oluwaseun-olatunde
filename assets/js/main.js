@@ -24,7 +24,8 @@
     doc.setAttribute("data-theme", t);
     $$(".theme-toggle").forEach(function (b) { b.setAttribute("aria-pressed", String(t === "dark")); });
   }
-  setTheme(saved || (prefersDark ? "dark" : "light"));
+  var qTheme = new URLSearchParams(location.search).get("theme");
+  setTheme(qTheme === "dark" || qTheme === "light" ? qTheme : (saved || (prefersDark ? "dark" : "light")));
   $$(".theme-toggle").forEach(function (b) {
     b.addEventListener("click", function () {
       var next = doc.getAttribute("data-theme") === "dark" ? "light" : "dark";
@@ -169,9 +170,16 @@
     input.setAttribute("aria-invalid", String(!ok));
     return ok;
   }
+  var errN = 0;
   $$("form[data-form]").forEach(function (form) {
     $$(".field", form).forEach(function (f) {
       var input = $("input, select, textarea", f);
+      var err = $(".err", f);
+      if (err && input) {
+        err.id = err.id || "err-" + (++errN);
+        err.setAttribute("role", "alert");
+        input.setAttribute("aria-describedby", ((input.getAttribute("aria-describedby") || "") + " " + err.id).trim());
+      }
       if (input) input.addEventListener("blur", function () { validateField(f); });
       if (input) input.addEventListener("input", function () { if (f.classList.contains("invalid")) validateField(f); });
     });

@@ -356,6 +356,8 @@ ${path === "404.html" ? `<base href="${SITE}/">` : ""}
 <link rel="canonical" href="${url}">
 ${noindex ? '<meta name="robots" content="noindex">' : ""}
 <meta name="theme-color" content="#0e1b2c">
+<meta name="color-scheme" content="light dark">
+${path === "index.html" ? `<link rel="preload" as="image" href="${r}assets/img/oluwaseun.jpg" fetchpriority="high">` : ""}
 <meta property="og:type" content="${section === "work" && depth > 1 ? "article" : "website"}">
 <meta property="og:site_name" content="${NAME}">
 <meta property="og:title" content="${esc(fullTitle)}">
@@ -370,7 +372,7 @@ ${noindex ? '<meta name="robots" content="noindex">' : ""}
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="${r}assets/css/styles.css">
-<script>try{var t=localStorage.getItem("theme")||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<script>try{var q=new URLSearchParams(location.search).get("theme");var t=(q==="dark"||q==="light"?q:null)||localStorage.getItem("theme")||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 ${jsonld ? `<script type="application/ld+json">${jsonld}</script>` : ""}
 </head>
 <body class="${bodyClass}">
